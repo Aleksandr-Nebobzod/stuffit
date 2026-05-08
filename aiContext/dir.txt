@@ -1,0 +1,20 @@
+total 96
+drwxr-xr-x   7 User  staff    224 Apr 29 22:09 stuffit
+drwxr-xr-x   7 User  staff    224 May  2 22:30 shared
+-rw-r--r--   1 User  staff    609 Apr 30 15:37 settings.gradle.kts
+-rw-r--r--   1 User  staff    433 Apr 29 21:11 local.properties
+drwxr-xr-x   3 User  staff     96 Apr 29 22:29 kotlin-js-store
+-rw-r--r--   1 User  staff    153 Apr 30 00:11 index.html
+-rw-r--r--   1 User  staff   2763 Apr 29 21:11 gradlew.bat
+-rwxr--r--   1 User  staff   5766 Apr 29 21:11 gradlew
+-rw-r--r--   1 User  staff    626 Apr 30 12:54 gradle.properties
+drwxr-xr-x   5 User  staff    160 Apr 30 14:36 gradle
+-rw-r--r--   1 User  staff    272 Apr 30 16:52 build.gradle.kts
+drwxr-xr-x   3 User  staff     96 May  2 22:29 build
+drwxr-xr-x   7 User  staff    224 May  2 22:34 aiContext
+drwxr-xr-x  10 User  staff    320 Apr 30 19:13 .idea
+drwxr-xr-x  10 User  staff    320 Apr 30 15:12 .gradle
+-rw-r--r--   1 User  staff     98 Apr 29 21:11 .gitignore
+-rw-r--r--@  1 User  staff  10244 May  2 22:34 .DS_Store
+drwxr-xr-x  47 User  staff   1504 Apr 29 22:15 ..
+drwxr-xr-x  19 User  staff    608 May  2 22:34 .

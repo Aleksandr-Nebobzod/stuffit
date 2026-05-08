@@ -1,0 +1,57 @@
+Привет, Дис. я намерен сделать приложение на котлин (это MVP), которое будет позволять вести учёт личных вещей. 
+-- что (классификации)
+-- где находится (история перемещений по адресам и помещениям и шкафчикам + учёт взаймы или дарения/ продажи)
+-- учёт событий, состояния 
+-- прогноз обслуживания
+
+предложи несколько вариантов платформ 
+
+интересует возможность использования полностью бесплатно, 
+но вручную и например, с API к крутым сервисам классификации, 
+ии-распознавания, ии-аналитик по стратегиям владения.. но это в перспективе.
+
+==========================================
+
+./gradlew clean
+./gradlew :shared:jsBrowserRun
+
+
+260430 чт
+./gradlew build # весь проект комплируется
+
+./gradlew :shared:compileKotlinDesktop # комплируется только модуль
+
+./gradlew desktopRunLocal # Минимальный запуск Desktop
+
+==================
+
+./gradlew :shared:jsBrowserWebpack # комплируется?
+
+./gradlew :shared:jsBrowserDevelopmentWebpack # cборка веб
+./gradlew :shared:jsBrowserDevelopmentRun # cборка и запуск
+
+
+./gradlew :shared:jsBrowserProductionWebpack # сделать билд
+
+
+# в папке
+
+cd /Users/User/AndroidStudioProjects/stuff/shared/build/dist/js/developmentExecutable
+или
+cd /Users/User/AndroidStudioProjects/stuff/shared/build/dist/js/productionExecutable
+
+# для файла index.html и прочих shared.js -- запустить питон сервис:
+python3 -m http.server 7777
+
+260504 пн
+
+    мини сервер
+Компиляция: ./gradlew :api-server:compileKotlin
+Сборка fat JAR: ./gradlew :api-server:shadowJar
+Запуск JAR: java -jar api-server/build/libs/api-server-all.jar
+
+# запустить сборку через терминал без IDE:
+./gradlew :api-server:shadowJar
+
+
+

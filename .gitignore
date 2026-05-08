@@ -1,0 +1,26 @@
+*.iml
+.gradle
+.idea
+.DS_Store
+build
+captures
+.externalNativeBuild
+.cxx
+local.properties
+xcuserdata
+
+# Kotlin Multiplatform
+.kotlin/
+**/build/
+**/bin/
+
+# Ktor сервер (JAR уже не включаем)
+api-server/build/
+api-server/*.jar
+
+# Градл
+gradle-app.setting
+**/gradle-wrapper.properties
+
+# Логи
+*.log
