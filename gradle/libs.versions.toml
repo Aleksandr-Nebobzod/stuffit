@@ -3,11 +3,33 @@ agp = "8.4.2"
 kotlin = "1.9.20"
 compose-plugin = "1.6.10"
 ui-desktop = "1.7.0"
+kotlinx-coroutines = "1.8.1"
+ktor = "2.3.7"
+slf4j = "2.0.9"
+kotlinx-datetime = "0.5.0"
 
 
 [libraries]
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 ui-desktop = { group = "androidx.compose.ui", name = "ui-desktop", version.ref = "ui-desktop" }
+# Ktor серверные библиотеки
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+# Вспомогательные библиотеки
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+
+[bundles]
+# Можно объединить Ktor в бандл для удобства
+ktor-server = [
+    "ktor-server-core",
+    "ktor-server-netty",
+    "ktor-server-content-negotiation",
+    "ktor-serialization-kotlinx-json"
+]
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

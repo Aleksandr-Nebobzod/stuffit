@@ -1,20 +1,16 @@
 package top.smartable.stuffit
 
-
-//import androidx.compose.ui.autofill.ContentType
-import io.ktor.http.ContentType
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.application.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.util.UUID
 import kotlinx.datetime.Clock
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import top.smartable.stuffit.model.Area
 import top.smartable.stuffit.model.User
 import top.smartable.stuffit.model.UserSettings
 
@@ -28,18 +24,36 @@ val mockUser = User(
     migrationFromSchulteId = null
 )
 
-
 fun main() {
+    // Инициализируем хранилища
+    val userStorage = mutableListOf(mockUser)
+    val areaStorage = mutableListOf<Area>()
+
+    // Создаем сервер (этого блока не хватало в источнике)
     val server = embeddedServer(Netty, port = 7777) {
+        // Обязательно устанавливаем поддержку JSON
         install(ContentNegotiation) {
-            json()
+            json(kotlinx.serialization.json.Json {
+                prettyPrint = true
+                isLenient = true
+                ignoreUnknownKeys = true // Игнорировать поля, которых нет в классе
+                encodeDefaults = true    // Включать дефолтные значения в ответ
+            })
         }
 
         routing {
             get("/") {
-                println("GET / called")
-                call.respondText("The server works / Сервер отвечает")
+                call.respondText("Сервер работает 4")
             }
+
+            // Регистрируем Generic-маршруты
+            autoCrud("/api/v1/users", userStorage) { it.id }
+            autoCrud("/api/v1/areas", areaStorage) { it.id }
+
+//            get("/") {
+//                println("GET / called")
+//                call.respondText("The server works / Сервер отвечает 3")
+//            }
 
             get("/api/v1/routes") {
                 val routes = mapOf(
@@ -63,6 +77,44 @@ fun main() {
             }
         }
     }
-    println("Сервер запущен по адресу http://localhost:7777")
+
+    println("Сервер запущен на http://localhost:7777")
     server.start(wait = true)
+}
+
+// Исправленная функция autoCrud с правильными обертками DSL
+inline fun <reified T : Any> Route.autoCrud(
+    path: String,
+    storage: MutableList<T>,
+    crossinline getId: (T) -> String?
+) {
+    route(path) {
+        // Получить все объекты
+        get {
+            println("get_all $path")
+            call.respond(storage)
+        }
+
+        // Добавить объект (POST) — добавлена обертка post { }
+        post {
+            try {
+                println("post $path")
+                val item = call.receive<T>()
+                storage.add(item)
+                call.respond(HttpStatusCode.Created, item)
+            } catch (e: Exception) {
+                println("Ошибка при обработке POST: ${e.message}")
+                // клиент получит 400 (Bad Request) вместо 500
+                call.respond(HttpStatusCode.BadRequest, "Ошибка в данных: ${e.message}")
+            }
+        }
+
+        // Получить по ID — добавлена обертка get("{id}") { }
+        get("{id}") {
+            println("get_by_id $path")
+            val id = call.parameters["id"]
+            val item = storage.find { getId(it) == id }
+            if (item != null) call.respond(item) else call.respond(HttpStatusCode.NotFound)
+        }
+    }
 }

@@ -1,3 +1,4 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "stuff"
 
 // Подключаем все модули согласно структуре v3
