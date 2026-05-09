@@ -1,0 +1,170 @@
+/Users/User/AndroidStudioProjects/stuff/gradle/libs.versions.toml
+
+[versions]
+agp = "8.4.2"
+kotlin = "1.9.20"
+compose-plugin = "1.6.10"
+ui-desktop = "1.7.0"
+
+
+[libraries]
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+ui-desktop = { group = "androidx.compose.ui", name = "ui-desktop", version.ref = "ui-desktop" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+=====
+
+/Users/User/AndroidStudioProjects/stuff/settings.gradle.kts
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+//println("SETTINGS EXECUTED")
+
+rootProject.name = "stuff"
+
+// ⬇️ ВАЖНО: include должен быть ДО или ВНЕ любых сложных конструкций
+include(":shared")
+include(":api-server")
+
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    }
+}
+=====
+
+/Users/User/AndroidStudioProjects/stuff/shared/build.gradle.kts
+
+plugins {
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.compose)
+//    alias(libs.plugins.kotlinSerialization)
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.20"
+}
+
+kotlin {
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    js(IR) {
+        browser()
+        binaries.executable()
+    }
+
+    jvm("desktop")
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation(compose.ui)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+            }
+        }
+
+        val jsMain by getting {
+            dependencies {
+                implementation(compose.web.core)
+                implementation(compose.runtime)
+            }
+        }
+
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
+            }
+        }
+    }
+}
+
+android {
+    namespace = "top.smartable.stuffit"
+    compileSdk = 34
+
+    defaultConfig {
+        minSdk = 24
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+tasks.register<JavaExec>("desktopRunLocal") {
+    group = "run"
+    mainClass.set("top.smartable.stuffit.MainKt")
+
+    val desktopCompilation = kotlin.targets.getByName("desktop").compilations.getByName("main")
+    classpath = files(
+        desktopCompilation.output.allOutputs,
+        desktopCompilation.runtimeDependencyFiles
+    )
+}
+=====
+
+/Users/User/AndroidStudioProjects/stuff/api-server/build.gradle.kts
+plugins {
+    kotlin("jvm")
+    application
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+}
+
+group = "top.smartable.stuffit"
+version = "1.0.0"
+
+repositories {
+    mavenCentral()
+}
+
+val ktorVersion = "2.3.7"
+
+dependencies {
+    implementation("io.ktor:ktor-server-core:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("org.slf4j:slf4j-simple:2.0.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    implementation(project(":shared"))
+}
+
+application {
+    mainClass.set("top.smartable.stuffit.AppKt")
+}
+
+tasks.shadowJar {
+    archiveFileName.set("api-server-all.jar")
+    mergeServiceFiles()
+}
+
+
+

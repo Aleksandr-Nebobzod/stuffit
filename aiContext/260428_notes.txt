@@ -53,5 +53,15 @@ python3 -m http.server 7777
 # запустить сборку через терминал без IDE:
 ./gradlew :api-server:shadowJar
 
+260508 пт
+
+➜  stuff git:(master) ✗ ./gradlew :api-server:shadowJar
+
+➜  stuff git:(master) ✗ java -jar api-server/build/libs/api-server-all.jar
+Сервер запущен по адресу http://localhost:7777
+
+➜  stuff git:(master) ✗ curl http://localhost:7777/                      
+The server works / Сервер отвечает%   
+
 
 

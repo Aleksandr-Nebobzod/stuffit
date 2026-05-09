@@ -2,10 +2,12 @@
 agp = "8.4.2"
 kotlin = "1.9.20"
 compose-plugin = "1.6.10"
+ui-desktop = "1.7.0"
 
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+ui-desktop = { group = "androidx.compose.ui", name = "ui-desktop", version.ref = "ui-desktop" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
