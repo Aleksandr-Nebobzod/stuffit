@@ -97,9 +97,10 @@ inline fun <reified T : Any> Route.autoCrud(
 
         // Добавить объект (POST) — добавлена обертка post { }
         post {
+            println("POST $path: получен запрос")
             try {
-                println("post $path")
                 val item = call.receive<T>()
+                println("  получен объект: $item")
                 storage.add(item)
                 call.respond(HttpStatusCode.Created, item)
             } catch (e: Exception) {

@@ -63,5 +63,23 @@ python3 -m http.server 7777
 ➜  stuff git:(master) ✗ curl http://localhost:7777/                      
 The server works / Сервер отвечает%   
 
+####################################
+./gradlew :api-server:shadowJar
+java -jar api-server/build/libs/api-server-all.jar
+###################################
+
+➜  stuff git:(master) ✗ curl -X POST http://localhost:7777/api/v1/users \
+  -H "Content-Type: application/json" \
+  -d '{"id":"3","email":"rkbv@test.com","displayName":"КЛИМ ))"}'
+
+➜  stuff git:(master) ✗ curl -X POST http://localhost:7777/api/v1/areas \
+  -H "Content-Type: application/json" \
+  -d '{"id":"1","name":"к","displayName":"Кухня"}'
+{
+    "id": "1",
+    "name": "к",
+    "displayName": "Кухня"
+}
+
 
 
